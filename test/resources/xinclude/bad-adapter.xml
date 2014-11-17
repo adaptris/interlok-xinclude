@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<adapter xmlns:xi="http://www.w3.org/2001/XInclude">
+  <unique-id>xinclude_adapter</unique-id>
+  <channel-list>
+    <!-- xinclude for a missing file will cause a failure -->
+    <xi:include href="file://localhost/@TEST_DATA_DIR@/no-channel.xml"/>
+  </channel-list>
+</adapter>

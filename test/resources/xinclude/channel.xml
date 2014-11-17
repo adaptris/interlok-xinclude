@@ -1,0 +1,20 @@
+<channel>
+  <auto-start>true</auto-start>
+  <unique-id>SEND</unique-id>
+
+  <workflow-list>
+    <standard-workflow>
+      <unique-id>SendMessage</unique-id>
+      <consumer class="polling-trigger">
+        <destination class="configured-consume-destination">
+          <configured-thread-name>SendMessage</configured-thread-name>
+        </destination>
+        <template>hello world</template>
+        <poller class="quartz-cron-poller">
+          <cron-expression>*/7 * * * * ?</cron-expression>
+        </poller>
+      </consumer>
+      <service-collection class="service-list"/>
+    </standard-workflow>
+  </workflow-list>
+</channel>
