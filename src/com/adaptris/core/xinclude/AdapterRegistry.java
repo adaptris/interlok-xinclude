@@ -1,4 +1,4 @@
-package com.adaptris.core.runtime.xinclude;
+package com.adaptris.core.xinclude;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import com.adaptris.util.license.LicenseException;
  * <p>
  * This AdapterRegistry can be activated by the setting the system property
  * {@value com.adaptris.core.management.AdapterConfigManager#ADAPTER_REGISTRY_IMPL} to be
- * {@code com.adaptris.core.runtime.xinclude.AdapterRegistry} and making sure the required jars are available on the classpath.
+ * {@code com.adaptris.core.xinclude.AdapterRegistry} and making sure the required jars are available on the classpath.
  * </p>
  * <p>
  * It is only useful if you are not using the UI to create configuration, as that will always create a monolithic configuration

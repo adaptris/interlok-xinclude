@@ -1,4 +1,8 @@
-package com.adaptris.core.runtime.xinclude;
+package com.adaptris.core.xinclude;
+
+import static com.adaptris.core.xinclude.JunitHelper.KEY_XINCLUDE_ADAPTER_XML;
+import static com.adaptris.core.xinclude.JunitHelper.KEY_XINCLUDE_ADAPTER_XML_BAD;
+import static com.adaptris.core.xinclude.JunitHelper.doAssertions;
 
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +21,6 @@ import com.adaptris.core.ClosedState;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMarshaller;
 import com.adaptris.core.JndiContextFactory;
-import com.adaptris.core.StandardWorkflow;
 import com.adaptris.core.runtime.AdapterManagerMBean;
 import com.adaptris.core.runtime.AdapterRegistryMBean;
 import com.adaptris.core.runtime.ComponentManagerCase;
@@ -25,9 +28,6 @@ import com.adaptris.core.stubs.JunitBootstrapProperties;
 import com.adaptris.util.license.LicenseException;
 
 public class AdapterRegistryTest extends ComponentManagerCase {
-
-  private static final String KEY_XINCLUDE_ADAPTER_XML = "xinclude.adapter.xml";
-  private static final String KEY_XINCLUDE_ADAPTER_XML_BAD = "xinclude.adapter.xml.bad";
 
   private AdapterRegistry adapterRegistry;
   private ObjectName registryObjectName;
@@ -89,11 +89,7 @@ public class AdapterRegistryTest extends ComponentManagerCase {
       assertEquals(ClosedState.getInstance(), manager.getComponentState());
       assertEquals(1, adapterRegistry.getAdapters().size());
       Adapter marshalled = (Adapter) DefaultMarshaller.getDefaultMarshaller().unmarshal(manager.getConfiguration());
-      assertEquals(1, marshalled.getChannelList().size());
-      assertEquals("SEND", marshalled.getChannelList().get(0).getUniqueId());
-      assertEquals(1, marshalled.getChannelList().get(0).getWorkflowList().size());
-      assertEquals(StandardWorkflow.class, marshalled.getChannelList().get(0).getWorkflowList().get(0).getClass());
-      assertEquals("SendMessage", marshalled.getChannelList().get(0).getWorkflowList().get(0).getUniqueId());
+      doAssertions(marshalled);
     }
     finally {
 
@@ -168,11 +164,7 @@ public class AdapterRegistryTest extends ComponentManagerCase {
       assertEquals(ClosedState.getInstance(), manager.getComponentState());
       assertEquals(1, adapterRegistry.getAdapters().size());
       Adapter marshalled = (Adapter) DefaultMarshaller.getDefaultMarshaller().unmarshal(manager.getConfiguration());
-      assertEquals(1, marshalled.getChannelList().size());
-      assertEquals("SEND", marshalled.getChannelList().get(0).getUniqueId());
-      assertEquals(1, marshalled.getChannelList().get(0).getWorkflowList().size());
-      assertEquals(StandardWorkflow.class, marshalled.getChannelList().get(0).getWorkflowList().get(0).getClass());
-      assertEquals("SendMessage", marshalled.getChannelList().get(0).getWorkflowList().get(0).getUniqueId());
+      doAssertions(marshalled);
 
     }
     finally {

@@ -7,3 +7,5 @@
 
 junit.xinclude.adapter.xml=${test.data.dir}/adapter.xml
 junit.xinclude.adapter.xml.bad=${test.data.dir}/bad-adapter.xml
+
+junit.MarshallerTest.dir=${basedir}/build/junit/marshaller
