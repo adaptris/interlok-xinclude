@@ -31,6 +31,7 @@
     <dependency org="com.adaptris" name="adp-core-apt" rev="${adp-core-version}" conf="compile->default;ant->default" changing="true"/>
     <dependency org="org.etourdot" name="xinclude" rev="1.0.1" conf="compile->default"/>
 
+    <dependency org="org.quartz-scheduler" name="quartz" rev="2.2.1" transitive="false" conf="compile->default"/>
 
     <dependency org="org.apache.velocity" name="velocity" rev="1.7" transitive="false" conf="compile->default"/>
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.5" conf="compile->default" />
