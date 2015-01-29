@@ -18,9 +18,9 @@ import com.adaptris.core.runtime.AbstractConfigurationPreProcessor;
  * Custom {@link com.adaptris.core.runtime.ConfigurationPreProcessor} implementation that supports xinclude directives as part of the adapter
  * configuration file.
  * <p>
- * This ConfigurationPreProcessor can be activated by the setting or appending to the system property
+ * This ConfigurationPreProcessor can be activated by the setting or appending to the bootstrap property
  * {@value com.adaptris.core.management.AdapterConfigManager#CONFIGURATION_PRE_PROCESSORS} to be
- * {@code com.adaptris.core.xinclude.XincludePreProcessor} and making sure the required jars are available on the classpath.
+ * <strong>xinclude</strong> and making sure the required jars are available on the classpath.
  * </p>
  * <p>
  * It is only useful if you are not using the UI to create configuration, as that will always create a monolithic configuration
