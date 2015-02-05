@@ -1,2 +1,1 @@
-name=xinclude
 class=com.adaptris.core.xinclude.XincludePreProcessor
