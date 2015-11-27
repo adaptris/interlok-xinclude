@@ -10,8 +10,9 @@ import org.etourdot.xincproc.xinclude.XIncProcEngine;
 import org.etourdot.xincproc.xinclude.exceptions.XIncludeFatalException;
 
 import com.adaptris.core.CoreException;
+import com.adaptris.core.config.ConfigPreProcessorImpl;
 import com.adaptris.core.management.BootstrapProperties;
-import com.adaptris.core.runtime.AbstractConfigurationPreProcessor;
+import com.adaptris.util.KeyValuePairSet;
 
 
 /**
@@ -32,11 +33,16 @@ import com.adaptris.core.runtime.AbstractConfigurationPreProcessor;
  * @author amcgrath
  * 
  */
-public class XincludePreProcessor extends AbstractConfigurationPreProcessor {
+public class XincludePreProcessor extends ConfigPreProcessorImpl {
 
   public XincludePreProcessor(BootstrapProperties bootstrapProperties) {
     super(bootstrapProperties);
   }
+
+  public XincludePreProcessor(KeyValuePairSet config) {
+    super(config);
+  }
+
 
   @Override
   public String process(String xml) throws CoreException {
