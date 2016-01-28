@@ -6,15 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.net.URL;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ReaderInputStream;
-import org.apache.commons.io.output.WriterOutputStream;
-import org.etourdot.xincproc.xinclude.XIncProcEngine;
 
-import com.adaptris.core.AdaptrisMarshaller;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.ExceptionHelper;
 import com.adaptris.util.URLString;
@@ -22,11 +18,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * XStream version of {@link AdaptrisMarshaller} that supports xinclude directives when unmarshalling.
- * <p>
- * It is only useful if you are not using the UI to create configuration, as that will always create a monolithic configuration
- * file. It uses the <a href="https://github.com/etourdot/xincproc">XIncProc Framework</a> to pre-process the document before
- * attempting to unmarshal the configuration. Note that the {@code org.etourdot.xincproc.xinclude.sax} package does emit a lot of
- * logging at TRACE level.
+ * <p>It uses the <a href="https://xerces.apache.org/xerces2-j/features.html#xinclude">XInclude feature</a> of Xerces-J.
  * </p>
  * 
  * @config xstream-xinclude-marshaller
@@ -42,7 +34,7 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
   public Object unmarshal(Reader reader) throws CoreException {
     Object result = null;
     try {
-      result = unmarshal(reader, "inline:xstream");
+      result = unmarshal(new ReaderInputStream(reader));
     }
     catch (Exception e) {
       throw new CoreException(e);
@@ -57,7 +49,7 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
   public Object unmarshal(String xml) throws CoreException {
     Object result = null;
     try (StringReader r = new StringReader(xml)) {
-      result = unmarshal(r, "inline:xstream");
+      result = unmarshal(r);
     }
     catch (Exception e) {
       ExceptionHelper.rethrowCoreException(e);
@@ -69,7 +61,7 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
   public Object unmarshal(File file) throws CoreException {
     Object result = null;
     try (InputStream in = new FileInputStream(file)) {
-      result = unmarshal(in, file.toURI().toURL().toExternalForm());
+      result = unmarshal(in);
     }
     catch (Exception e) {
       ExceptionHelper.rethrowCoreException(e);
@@ -84,7 +76,7 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
     }
     Object result = null;
     try (InputStream in = fileUrl.openStream()) {
-      result = this.unmarshal(in, fileUrl.toExternalForm());
+      result = this.unmarshal(in);
     }
     catch (Exception e) {
       ExceptionHelper.rethrowCoreException(e);
@@ -97,7 +89,7 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
     Object result = null;
     try (InputStream in = connectToUrl(loc)) {
       if (in != null) {
-        result = this.unmarshal(in, loc.toString());
+        result = this.unmarshal(in);
       }
       else {
         throw new IOException("could not unmarshal component from [" + loc + "]");
@@ -111,25 +103,14 @@ public class XStreamMarshaller extends com.adaptris.core.XStreamMarshaller {
 
   @Override
   public Object unmarshal(InputStream stream) throws CoreException {
-    return this.unmarshal(stream, "inline:xml");
-  }
-
-  private Object unmarshal(Reader reader, String xmlbase) throws CoreException {
-    return unmarshal(new ReaderInputStream(reader), xmlbase);
-  }
-
-  private Object unmarshal(InputStream input, String xmlbase) throws CoreException {
-    Object result = null;
-    StringWriter sw = new StringWriter();
-    try (WriterOutputStream out = new WriterOutputStream(sw)) {
-      XIncProcEngine.parse(input, xmlbase, out);
-    }
-    catch (Exception e) {
+    String parsed = null;
+    try {
+      parsed = Helper.toString(Helper.toDocument(stream));
+    } catch (Exception e) {
       ExceptionHelper.rethrowCoreException(e);
+    } finally {
     }
-    result = getInstance().fromXML(sw.toString());
-    return result;
-
+    return getInstance().fromXML(parsed);
   }
 
 }
