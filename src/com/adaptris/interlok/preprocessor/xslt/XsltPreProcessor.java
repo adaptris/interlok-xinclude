@@ -11,7 +11,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -103,7 +102,6 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
 
   private String transform(Reader input) throws CoreException {
     String result = null;
-    Properties p = getPropertySubset(getProperties(), XSLT_PARAM_PREFIX, true);
     String url = getPropertyIgnoringCase(getProperties(), XSLT_URL);
     try (Reader autoClose = input; StringWriter output = new StringWriter()) {
       configure(createTransformer(url)).transform(new DOMSource(builder().parse(new InputSource(input))), new StreamResult(output));
