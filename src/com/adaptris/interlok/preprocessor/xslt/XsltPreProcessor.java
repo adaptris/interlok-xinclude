@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -33,6 +34,7 @@ import com.adaptris.util.KeyValuePairBag;
 import com.adaptris.util.KeyValuePairSet;
 import com.adaptris.util.URLHelper;
 import com.adaptris.util.URLString;
+import com.mchange.v1.lang.BooleanUtils;
 
 
 /**
@@ -73,6 +75,16 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
    * 
    */
   public static final String XSLT_TRANSFORMER_IMPL = "xslt.preprocessor.transformerImpl.";
+
+  /**
+   * The key in configuration specifying whether or not system properties and environment variables are passed as-is through to the
+   * stylesheet.
+   * <p>
+   * Note that parameters specified by {@link #XSLT_PARAM_PREFIX} will overwrite any environment/system properties that are passed
+   * through to the xslt
+   * </p>
+   */
+  public static final String XSLT_PASS_ENV = "xslt.preprocessor.environment.params";
 
   private transient DocumentBuilder builder;
 
@@ -127,8 +139,8 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
 
   private Transformer configure(Transformer transform) {
     transform.clearParameters();
-    Map<String, String> actualParams = KeyValuePairBag
-        .asMap(new KeyValuePairSet(getPropertySubset(getProperties(), XSLT_PARAM_PREFIX, true)));
+    Map<String, String> actualParams = getEnvironment();
+    actualParams.putAll(KeyValuePairBag.asMap(new KeyValuePairSet(getPropertySubset(getProperties(), XSLT_PARAM_PREFIX, true))));
     for (Map.Entry<String, String> e : actualParams.entrySet()) {
       transform.setParameter(e.getKey().replace(XSLT_PARAM_PREFIX, ""), e.getValue());
     }
@@ -141,5 +153,14 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
           .newDocumentBuilder(DocumentBuilderFactory.newInstance());
     }
     return builder;
+  }
+
+  private Map<String, String> getEnvironment() {
+    Map<String, String> result = new HashMap<>();
+    if (BooleanUtils.parseBoolean(getPropertyIgnoringCase(getProperties(), XSLT_PASS_ENV, "false"))) {
+      result.putAll(System.getenv());
+      result.putAll(KeyValuePairBag.asMap(new KeyValuePairSet(System.getProperties())));
+    }
+    return result;
   }
 }

@@ -47,6 +47,7 @@ public class XsltPreProcessorTest extends ComponentManagerCase {
     Properties p = new Properties();
     p.setProperty(XsltPreProcessor.XSLT_URL, PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML));
     p.setProperty(XsltPreProcessor.XSLT_PARAM_PREFIX + "duplicates", "5");
+    p.setProperty(XsltPreProcessor.XSLT_PASS_ENV, "true");
     XsltPreProcessor preProcessor = new XsltPreProcessor(new JunitBootstrapProperties(p));
     try {
       String xml = preProcessor.process(createAdapterXml());
