@@ -58,7 +58,7 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
   /**
    * The prefix key in configuration that will contain all the parameters you want to pass in to the transform.
    * <p>
-   * The prefix is {@value #XSLT_URL}; properties prefixed by this key will be stripped of the prefix and passed into the transform
+   * The prefix is {@value #XSLT_PARAM_PREFIX}; properties prefixed by this key will be stripped of the prefix and passed into the transform
    * as-is, e.g. {@code xslt.preprocessor.params.count=5} will be passed in as {@code count} which means you can access it in your
    * xslt as {@code $count}.
    * </p>
