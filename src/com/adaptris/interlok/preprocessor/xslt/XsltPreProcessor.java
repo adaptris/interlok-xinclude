@@ -67,18 +67,18 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
   public static final String XSLT_PARAM_PREFIX = "xslt.preprocessor.params.";
 
   /**
-   * The key in configuration that dictates the XML transform factory to use.
+   * The key in configuration that dictates the XML transform factory to use : {@value #XSLT_TRANSFORMER_IMPL}.
    * <p>
    * Unless you have a pressing need to override the default provided {@link TransformerFactory#newInstance()} then you don't need
    * to modify this.
    * </p>
    * 
    */
-  public static final String XSLT_TRANSFORMER_IMPL = "xslt.preprocessor.transformerImpl.";
+  public static final String XSLT_TRANSFORMER_IMPL = "xslt.preprocessor.transformerImpl";
 
   /**
    * The key in configuration specifying whether or not system properties and environment variables are passed as-is through to the
-   * stylesheet.
+   * stylesheet : {@value #XSLT_PASS_ENV}.
    * <p>
    * Note that parameters specified by {@link #XSLT_PARAM_PREFIX} will overwrite any environment/system properties that are passed
    * through to the xslt
