@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -139,10 +140,10 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
 
   private Transformer configure(Transformer transform) {
     transform.clearParameters();
-    Map<String, String> actualParams = getEnvironment();
-    actualParams.putAll(KeyValuePairBag.asMap(new KeyValuePairSet(getPropertySubset(getProperties(), XSLT_PARAM_PREFIX, true))));
-    for (Map.Entry<String, String> e : actualParams.entrySet()) {
-      transform.setParameter(e.getKey().replace(XSLT_PARAM_PREFIX, ""), e.getValue());
+    Map<String, String> params = getEnvironment();
+    params.putAll(getConfiguredParams());
+    for (Map.Entry<String, String> e : params.entrySet()) {
+      transform.setParameter(e.getKey(), e.getValue());
     }
     return transform;
   }
@@ -160,6 +161,15 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
     if (BooleanUtils.parseBoolean(getPropertyIgnoringCase(getProperties(), XSLT_PASS_ENV, "false"))) {
       result.putAll(System.getenv());
       result.putAll(KeyValuePairBag.asMap(new KeyValuePairSet(System.getProperties())));
+    }
+    return result;
+  }
+
+  private Map<String, String> getConfiguredParams() {
+    Map<String, String> result = new HashMap<>();
+    Properties params = getPropertySubset(getProperties(), XSLT_PARAM_PREFIX, true);
+    for (String key : params.stringPropertyNames()) {
+      result.put(key.replace(XSLT_PARAM_PREFIX, ""), params.getProperty(key));
     }
     return result;
   }
