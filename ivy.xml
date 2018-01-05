@@ -21,7 +21,7 @@
   <publications>
      <artifact name="adp-xinclude" type="jar" ext="jar"/>
      <artifact name="adp-xinclude" type="pom" ext="pom"/>
-     <artifact name="adp-xinclude-javadoc" type="javadoc" ext="zip" conf="javadoc"/>
+
      <artifact type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
