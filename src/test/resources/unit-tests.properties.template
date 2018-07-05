@@ -1,0 +1,6 @@
+xinclude.adapter.xml=@TEST_DATA_DIR@/adapter.xml
+xinclude.adapter.xml.bad=@TEST_DATA_DIR@/bad-adapter.xml
+
+MarshallerTest.dir=@BUILD_DIR@/junit/marshaller
+
+xslt.transform.url=file://localhost/@BASE_DIR@/src/test/resources/xslt/duplicate.xslt
