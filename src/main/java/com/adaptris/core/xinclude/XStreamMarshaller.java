@@ -11,6 +11,7 @@ import java.net.URL;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ReaderInputStream;
 
+import com.adaptris.core.AdaptrisMarshaller;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.util.ExceptionHelper;
 import com.adaptris.util.URLString;
