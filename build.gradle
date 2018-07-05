@@ -155,11 +155,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
   from javadoc.destinationDir
 }
 
-task examplesJar(type: Jar, dependsOn: test) {
-  classifier = 'examples'
-  from new File(buildDir, '/examples')
-}
-
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -172,7 +167,6 @@ clean.dependsOn deleteUnitTestProperties
 
 artifacts {
   archives javadocJar
-  archives examplesJar
   archives sourcesJar
 }
 
@@ -182,7 +176,6 @@ publishing {
       from components.java
 
       artifact javadocJar { classifier "javadoc" }
-      artifact examplesJar { classifier "examples" }
       artifact sourcesJar { classifier "sources" }
 
       pom.withXml {
