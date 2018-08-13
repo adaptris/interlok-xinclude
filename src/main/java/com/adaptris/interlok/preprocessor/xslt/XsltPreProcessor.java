@@ -3,6 +3,7 @@ package com.adaptris.interlok.preprocessor.xslt;
 import static com.adaptris.core.util.PropertyHelper.getPropertyIgnoringCase;
 import static com.adaptris.core.util.PropertyHelper.getPropertySubset;
 import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -115,7 +116,7 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
 
   private String transform(Reader input) throws CoreException {
     String result = null;
-    String url = getPropertyIgnoringCase(getProperties(), XSLT_URL);
+    String url = backslashToSlash(getPropertyIgnoringCase(getProperties(), XSLT_URL));
     try (Reader autoClose = input; StringWriter output = new StringWriter()) {
       configure(createTransformer(url)).transform(new DOMSource(builder().parse(new InputSource(input))), new StreamResult(output));
       result = output.toString();
@@ -172,5 +173,12 @@ public class XsltPreProcessor extends ConfigPreProcessorImpl {
       result.put(key.replace(XSLT_PARAM_PREFIX, ""), params.getProperty(key));
     }
     return result;
+  }
+
+  private static String backslashToSlash(String url) {
+    if (!isEmpty(url)) {
+      return url.replaceAll("\\\\", "/");
+    }
+    return url;
   }
 }
