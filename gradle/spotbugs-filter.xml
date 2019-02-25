@@ -6,8 +6,11 @@
 
   <Match>
     <Not>
-      <!-- Ignore the Default encoding bugs -->
-      <Bug code="Dm" />
+      <!-- Ignore
+           Default encoding bugs
+           Name shadowing since it's fine that XStreamMarshaller does shadow.
+      -->
+      <Bug code="Dm,Nm" />
     </Not>
   </Match>
 
