@@ -5,13 +5,10 @@ import java.io.Closeable;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
-
+import java.io.Writer;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
 import com.adaptris.util.XmlUtils;
 
 class Helper {
@@ -30,17 +27,17 @@ class Helper {
   static Document toDocument(InputStream source) throws Exception {
     Document doc = null;
     try (DevNullConsole devnull = new DevNullConsole().open()) {
-      doc = newBuilderFactory().newDocumentBuilder().parse(source);
+      // Ignore XXE, since the context in which this is used, we might actually
+      // want to allow <!ENTITY things>
+      doc = newBuilderFactory().newDocumentBuilder().parse(source); // lgtm [java/xxe]
     }
     return doc;
   }
 
   static String toString(Document d) throws Exception {
     StringWriter writer = new StringWriter();
-    try {
-      new XmlUtils().writeDocument(d, writer, "UTF-8");
-    } finally {
-      IOUtils.closeQuietly(writer);
+    try (Writer w = writer) {
+      new XmlUtils().writeDocument(d, w, "UTF-8");
     }
     return writer.toString();
   }
@@ -76,6 +73,7 @@ class Helper {
       return this;
     }
 
+    @Override
     public void close() {
       try {
         System.setErr(stderr);
