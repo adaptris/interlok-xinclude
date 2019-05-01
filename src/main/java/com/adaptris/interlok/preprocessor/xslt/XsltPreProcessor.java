@@ -4,7 +4,6 @@ import static com.adaptris.core.util.PropertyHelper.getPropertyIgnoringCase;
 import static com.adaptris.core.util.PropertyHelper.getPropertySubset;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -14,7 +13,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,11 +20,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.apache.commons.io.input.XmlStreamReader;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
-
 import com.adaptris.core.CoreException;
 import com.adaptris.core.config.ConfigPreProcessorImpl;
 import com.adaptris.core.management.BootstrapProperties;
@@ -40,12 +36,12 @@ import com.mchange.v1.lang.BooleanUtils;
 
 
 /**
- * Custom {@link com.adaptris.core.runtime.ConfigurationPreProcessor} implementation that allows you to execute an XSLT before
- * unmarshalling the adapter configuration file.
+ * Custom {@link com.adaptris.core.config.ConfigPreProcessor} implementation that allows you to
+ * execute an XSLT before unmarshalling the adapter configuration file.
  * <p>
- * This ConfigurationPreProcessor can be activated by the setting or appending to the bootstrap property
- * {@value com.adaptris.core.management.AdapterConfigManager#CONFIGURATION_PRE_PROCESSORS} to be {@code xslt} and making sure the
- * required jars are available on the classpath.
+ * This ConfigurationPreProcessor can be activated by the setting or appending to the bootstrap
+ * property {@value com.adaptris.core.management.AdapterConfigManager#CONFIGURATION_PRE_PROCESSORS}
+ * to be {@code xslt} and making sure the required jars are available on the classpath.
  * </p>
  * 
  */
