@@ -8,7 +8,7 @@ plugins {
   id 'jacoco'
   // Manage optional dependencies in maven pom.
   id 'nebula.optional-base' version '5.0.3'
-  id 'com.github.spotbugs' version '2.0.0'
+  id 'com.github.spotbugs' version '3.0.0'
 }
 
 ext {
@@ -30,6 +30,24 @@ ext {
   slf4jVersion = '1.7.26'
   log4j2Version = '2.12.1'
 
+}
+ext.gitBranchNameOrTimestamp = { branchName ->
+  if (branchName.equals("HEAD") || branchName.equals("develop") || branchName.startsWith("release")) {
+    return new Date().format('HH:mm:ss z');
+  }
+  return branchName;
+}
+
+ext.buildInfo = { ->
+   new ByteArrayOutputStream().withStream { os ->
+      exec {
+        executable = "git"
+        args = ["rev-parse", "--abbrev-ref", "HEAD"]
+        standardOutput = os
+      }
+      def branchName = os.toString().replaceAll("\r", "").replaceAll("\n", "").trim();
+      return gitBranchNameOrTimestamp(branchName);
+    }
 }
 
 sourceCompatibility = 1.8
@@ -115,6 +133,7 @@ task generateVersion {
       entry(key: 'artifactId', value: project.name)
       entry(key: 'build.version', value: releaseVersion)
       entry(key: 'build.date', value: new Date().format('yyyy-MM-dd'))
+      entry(key: 'build.info', value: buildInfo())
     }
   }
 }
@@ -163,10 +182,6 @@ javadoc {
     options.addStringOption "tagletpath", configurations.javadoc.asPath
     title= componentName
   }
-}
-
-jacoco {
-  toolVersion="0.8.3"
 }
 
 jacocoTestReport {
