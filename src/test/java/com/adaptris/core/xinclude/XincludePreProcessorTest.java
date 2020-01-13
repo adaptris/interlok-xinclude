@@ -3,39 +3,38 @@ package com.adaptris.core.xinclude;
 import static com.adaptris.core.xinclude.JunitHelper.KEY_XINCLUDE_ADAPTER_XML;
 import static com.adaptris.core.xinclude.JunitHelper.KEY_XINCLUDE_ADAPTER_XML_BAD;
 import static com.adaptris.core.xinclude.JunitHelper.doAssertions;
-
+import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Properties;
-
 import org.apache.commons.io.IOUtils;
-
+import org.junit.Before;
+import org.junit.Test;
 import com.adaptris.core.Adapter;
+import com.adaptris.core.BaseCase;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMarshaller;
-import com.adaptris.core.runtime.ComponentManagerCase;
 import com.adaptris.core.stubs.JunitBootstrapProperties;
+import com.adaptris.core.stubs.TempFileUtils;
 
-public class XincludePreProcessorTest extends ComponentManagerCase {
+public class XincludePreProcessorTest extends BaseCase {
   
   private XincludePreProcessor preProcessor;
 
-  public XincludePreProcessorTest(String name) {
-    super(name);
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
 
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     preProcessor = new XincludePreProcessor(new JunitBootstrapProperties(new Properties()));
   }
   
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
+  @Test
   public void testCreateAdapter_BadURL() throws Exception {
     Object marker = new Object();
-    File filename = deleteLater(marker);
+    File filename = TempFileUtils.createTrackedFile(testName.getMethodName(), null, marker);
     try {
       preProcessor.process(filename.toURI().toURL());
       fail();
@@ -43,6 +42,7 @@ public class XincludePreProcessorTest extends ComponentManagerCase {
     catch (CoreException expected) {}
   }
 
+  @Test
   public void testCreateAdapter_URL_CrapData() throws Exception {
     File filename = new File(PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML_BAD));
     try {
@@ -53,6 +53,7 @@ public class XincludePreProcessorTest extends ComponentManagerCase {
     finally {}
   }
   
+  @Test
   public void testCreateAdapter_URL_WithXinclude() throws Exception {
     File filename = new File(PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML));
     try {
@@ -63,6 +64,7 @@ public class XincludePreProcessorTest extends ComponentManagerCase {
     finally {}
   }
   
+  @Test
   public void testProxy_CreateAdapter_String_WithXinclude() throws Exception {
     File filename = new File(PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML));
     try (FileReader reader = new FileReader(filename)) {
