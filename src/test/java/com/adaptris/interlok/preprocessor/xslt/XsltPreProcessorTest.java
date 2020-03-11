@@ -1,37 +1,33 @@
 package com.adaptris.interlok.preprocessor.xslt;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-
 import org.apache.commons.io.IOUtils;
-
+import org.junit.Test;
 import com.adaptris.core.Adapter;
+import com.adaptris.core.BaseCase;
 import com.adaptris.core.Channel;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMarshaller;
 import com.adaptris.core.StandardWorkflow;
 import com.adaptris.core.WorkflowList;
-import com.adaptris.core.runtime.ComponentManagerCase;
 import com.adaptris.core.stubs.JunitBootstrapProperties;
+import com.adaptris.core.stubs.TempFileUtils;
 
-public class XsltPreProcessorTest extends ComponentManagerCase {
+public class XsltPreProcessorTest extends BaseCase {
   public static final String KEY_XINCLUDE_ADAPTER_XML = "xslt.transform.url";
 
-  public XsltPreProcessorTest(String name) {
-    super(name);
-  }
-
-  public void setUp() throws Exception {
-    super.setUp();
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
   }
   
-  public void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
+  @Test
   public void testCreateAdapter_WithNoTransform() throws Exception {
 
     XsltPreProcessor preProcessor = new XsltPreProcessor(new JunitBootstrapProperties(new Properties()));
@@ -42,6 +38,7 @@ public class XsltPreProcessorTest extends ComponentManagerCase {
     catch (CoreException expected) {}
   }
 
+  @Test
   public void testCreateAdapter() throws Exception {
 
     Properties p = new Properties();
@@ -58,6 +55,7 @@ public class XsltPreProcessorTest extends ComponentManagerCase {
     }
   }
 
+  @Test
   public void testCreateAdapter_CustomImpl() throws Exception {
     Properties p = new Properties();
     p.setProperty(XsltPreProcessor.XSLT_URL, PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML));
@@ -73,6 +71,7 @@ public class XsltPreProcessorTest extends ComponentManagerCase {
     }
   }
 
+  @Test
   public void testCreateAdapter_URL() throws Exception {
     Properties p = new Properties();
     p.setProperty(XsltPreProcessor.XSLT_URL, PROPERTIES.getProperty(KEY_XINCLUDE_ADAPTER_XML));
@@ -90,7 +89,7 @@ public class XsltPreProcessorTest extends ComponentManagerCase {
   }
 
   private URL create(String xml, Object marker) throws IOException {
-    File filename = deleteLater(marker);
+    File filename = TempFileUtils.createTrackedFile(testName.getMethodName(), null, marker);
     try (FileOutputStream out = new FileOutputStream(filename)) {
       IOUtils.write(xml, out);
     }

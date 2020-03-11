@@ -2,8 +2,8 @@ package com.adaptris.interlok.preprocessor.xslt;
 
 import static com.adaptris.core.util.PropertyHelper.getPropertyIgnoringCase;
 import static com.adaptris.core.util.PropertyHelper.getPropertySubset;
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
