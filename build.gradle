@@ -229,7 +229,7 @@ publishing {
         asNode().appendNode("name", componentName)
         asNode().appendNode("description", "XSLT and XInclude Config Pre-processors")
         def properties = asNode().appendNode("properties")
-        properties.appendNode("url", "https://interlok.adaptris.net/interlok-docs/advanced-configuration-pre-processors.html#xinclude")
+        properties.appendNode("url", "https://interlok.adaptris.net/interlok-docs/#/pages/advanced/advanced-configuration-pre-processors?id=xinclude")
         properties.appendNode("target", "3.8.0+")
         properties.appendNode("tags", "xinclude,xslt")
         properties.appendNode("license", "false")
