@@ -241,6 +241,7 @@ publishing {
         properties.appendNode("tags", "xinclude,xslt")
         properties.appendNode("license", "false")
         properties.appendNode("repository", "https://github.com/adaptris/interlok-xinclude")
+        properties.appendNode("deprecated", "This component has been deprecated and will be removed in 5.0.0; One of the reasons for this, is the way the Interlok Config Projects and Interlok xincludes pre-processors work with relative paths, i.e. they are not compatible with each other")
       }
     }
   }
