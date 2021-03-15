@@ -6,9 +6,6 @@
     <standard-workflow>
       <unique-id>SendMessage</unique-id>
       <consumer class="polling-trigger">
-        <destination class="configured-consume-destination">
-          <configured-thread-name>SendMessage</configured-thread-name>
-        </destination>
         <poller class="quartz-cron-poller">
           <cron-expression>*/7 * * * * ?</cron-expression>
         </poller>
