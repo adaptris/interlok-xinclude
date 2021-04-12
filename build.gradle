@@ -7,14 +7,14 @@ plugins {
   id 'maven-publish'
   id 'jacoco'
   // Manage optional dependencies in maven pom.
-  id 'nebula.optional-base' version '5.0.3'
-  id 'com.github.spotbugs' version '4.6.0'
-  id 'org.owasp.dependencycheck' version '6.0.5'
+  id 'nebula.optional-base' version '6.0.0'
+  id 'com.github.spotbugs' version '4.7.0'
+  id 'org.owasp.dependencycheck' version '6.1.2'
 }
 
 ext {
-  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.12-SNAPSHOT'
-  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.12-SNAPSHOT'
+  interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '4.0-SNAPSHOT'
+  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '4.0-SNAPSHOT'
   nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://nexus.adaptris.net/nexus'
   mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
   javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
@@ -25,11 +25,15 @@ ext {
 
   interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
   interlokCommonJavadocs= project.hasProperty('interlokCommonJavadocs') ? project.getProperty('interlokCommonJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
-  componentName='Interlok Config Pre-Processor: xinclude/xslt support'
+
+  componentName='Interlok Config/xinclude'
+  componentDesc="XSLT and XInclude Config Pre-processors"
+
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
   slf4jVersion = '1.7.30'
 }
+
 ext.gitBranchNameOrTimestamp = { branchName ->
   if (branchName.equals("HEAD") || branchName.equals("develop") || branchName.startsWith("release")) {
     return new Date().format('HH:mm:ss z');
@@ -49,8 +53,8 @@ ext.buildInfo = { ->
     }
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
@@ -82,6 +86,9 @@ configurations {
   all*.exclude group: 'javax.validation', module: 'validation-api'
   all*.exclude group: 'javax.activation', module: 'activation'
   all*.exclude group: 'javax.activation', module: 'javax.activation-api'
+
+  // INTERLOK-3740 switch from jcraft to com.github.mwiede jsch fork.
+  all*.exclude group: 'com.jcraft', module: 'jsch'
 }
 
 configurations.all {
@@ -94,7 +101,7 @@ dependencies {
 
   annotationProcessor ("com.adaptris:interlok-core-apt:$interlokCoreVersion") {changing= true}
 
-  testCompile ('junit:junit:4.13.1')
+  testCompile ('junit:junit:4.13.2')
   testCompile "org.slf4j:slf4j-simple:$slf4jVersion"
   // exclude any log4j dependencies so that we can just use slf4j simple.
   // works around INTERLOk-3233
@@ -104,8 +111,8 @@ dependencies {
   }
 
 
-  testCompile ("org.mockito:mockito-core:3.7.0")
-  testCompile ("org.mockito:mockito-inline:3.7.0")
+  testCompile ("org.mockito:mockito-core:3.8.0")
+  testCompile ("org.mockito:mockito-inline:3.8.0")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
   offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
@@ -139,6 +146,7 @@ task generateVersion {
     versionFile.getParentFile().mkdirs()
     ant.propertyfile(file: versionFile) {
       entry(key: 'component.name', value: componentName)
+      entry(key: 'component.description', value: componentDesc)
       entry(key: 'groupId', value: project.group)
       entry(key: 'artifactId', value: project.name)
       entry(key: 'build.version', value: releaseVersion)
@@ -158,6 +166,7 @@ task offlinePackageList(type: Copy) {
     }
   }
   include "package-list"
+  include "element-list"
   into offlineJavadocPackageDir
 }
 
@@ -190,6 +199,7 @@ javadoc {
     options.linksOffline(interlokCommonJavadocs, offlineJavadocPackageDir.getCanonicalPath() + "/interlok-common-$interlokCoreVersion-javadoc.jar")
     taglets = ["com.adaptris.taglet.ConfigTaglet", "com.adaptris.taglet.LicenseTaglet"]
     options.addStringOption "tagletpath", configurations.javadoc.asPath
+    options.addBooleanOption "-no-module-directories", true
     title= componentName
   }
 }
@@ -227,13 +237,14 @@ publishing {
 
       pom.withXml {
         asNode().appendNode("name", componentName)
-        asNode().appendNode("description", "XSLT and XInclude Config Pre-processors")
+        asNode().appendNode("description", componentDesc)
         def properties = asNode().appendNode("properties")
         properties.appendNode("url", "https://interlok.adaptris.net/interlok-docs/#/pages/advanced/advanced-configuration-pre-processors?id=xinclude")
         properties.appendNode("target", "3.8.0+")
         properties.appendNode("tags", "xinclude,xslt")
         properties.appendNode("license", "false")
         properties.appendNode("repository", "https://github.com/adaptris/interlok-xinclude")
+        properties.appendNode("deprecated", "This component has been deprecated and will be removed in 5.0.0")
       }
     }
   }
