@@ -1,6 +1,6 @@
 package com.adaptris.core.xinclude;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.adaptris.core.Adapter;
 import com.adaptris.core.StandardWorkflow;
@@ -18,4 +18,5 @@ public class JunitHelper {
     assertEquals(StandardWorkflow.class, adapter.getChannelList().get(0).getWorkflowList().get(0).getClass());
     assertEquals("SendMessage", adapter.getChannelList().get(0).getWorkflowList().get(0).getUniqueId());
   }
+
 }

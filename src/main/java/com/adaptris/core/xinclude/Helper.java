@@ -6,9 +6,12 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.io.Writer;
+
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+
 import com.adaptris.util.XmlUtils;
 
 class Helper {
@@ -17,7 +20,7 @@ class Helper {
 
   static Document toDocument(InputSource source) throws Exception {
     Document doc = null;
-    try (DevNullConsole devnull = new DevNullConsole().open()) {
+    try (DevNullConsole devnull = new DevNullConsole()) {
       devnull.open();
       doc = newBuilderFactory().newDocumentBuilder().parse(source);
     }
@@ -26,7 +29,8 @@ class Helper {
 
   static Document toDocument(InputStream source) throws Exception {
     Document doc = null;
-    try (DevNullConsole devnull = new DevNullConsole().open()) {
+    try (DevNullConsole devnull = new DevNullConsole()) {
+      devnull.open();
       // Ignore XXE, since the context in which this is used, we might actually
       // want to allow <!ENTITY things>
       doc = newBuilderFactory().newDocumentBuilder().parse(source); // lgtm [java/xxe]
@@ -68,7 +72,7 @@ class Helper {
         System.setErr(divert);
         System.setOut(divert);
       } catch (SecurityException ignored) {
-        ;
+
       }
       return this;
     }
@@ -79,7 +83,7 @@ class Helper {
         System.setErr(stderr);
         System.setOut(stdout);
       } catch (SecurityException ignored) {
-        ;
+
       }
       divert.close();
     }
