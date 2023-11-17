@@ -1,16 +1,19 @@
 package com.adaptris.interlok.preprocessor.xslt;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import com.adaptris.core.Adapter;
-import com.adaptris.core.BaseCase;
 import com.adaptris.core.Channel;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMarshaller;
@@ -18,15 +21,11 @@ import com.adaptris.core.StandardWorkflow;
 import com.adaptris.core.WorkflowList;
 import com.adaptris.core.stubs.JunitBootstrapProperties;
 import com.adaptris.core.stubs.TempFileUtils;
+import com.adaptris.interlok.junit.scaffolding.BaseCase;
 
 public class XsltPreProcessorTest extends BaseCase {
   public static final String KEY_XINCLUDE_ADAPTER_XML = "xslt.transform.url";
 
-  @Override
-  public boolean isAnnotatedForJunit4() {
-    return true;
-  }
-  
   @Test
   public void testCreateAdapter_WithNoTransform() throws Exception {
 
@@ -34,8 +33,8 @@ public class XsltPreProcessorTest extends BaseCase {
     try {
       preProcessor.process(createAdapterXml());
       fail();
+    } catch (CoreException expected) {
     }
-    catch (CoreException expected) {}
   }
 
   @Test
@@ -50,8 +49,7 @@ public class XsltPreProcessorTest extends BaseCase {
       String xml = preProcessor.process(createAdapterXml());
       Adapter marshalled = (Adapter) DefaultMarshaller.getDefaultMarshaller().unmarshal(xml);
       doAssertions(marshalled, 5);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -66,8 +64,7 @@ public class XsltPreProcessorTest extends BaseCase {
       String xml = preProcessor.process(createAdapterXml());
       Adapter marshalled = (Adapter) DefaultMarshaller.getDefaultMarshaller().unmarshal(xml);
       doAssertions(marshalled, 5);
-    }
-    finally {
+    } finally {
     }
   }
 
@@ -83,15 +80,14 @@ public class XsltPreProcessorTest extends BaseCase {
       String xml = preProcessor.process(url);
       Adapter marshalled = (Adapter) DefaultMarshaller.getDefaultMarshaller().unmarshal(xml);
       doAssertions(marshalled, 5);
-    }
-    finally {
+    } finally {
     }
   }
 
   private URL create(String xml, Object marker) throws IOException {
-    File filename = TempFileUtils.createTrackedFile(testName.getMethodName(), null, marker);
+    File filename = TempFileUtils.createTrackedFile(getName(), null, marker);
     try (FileOutputStream out = new FileOutputStream(filename)) {
-      IOUtils.write(xml, out);
+      IOUtils.write(xml, out, StandardCharsets.UTF_8);
     }
     return filename.toURI().toURL();
   }
@@ -107,7 +103,6 @@ public class XsltPreProcessorTest extends BaseCase {
     return DefaultMarshaller.getDefaultMarshaller().marshal(a);
   }
 
-
   public static void doAssertions(Adapter adapter, int workflowCount) throws Exception {
     assertEquals(1, adapter.getChannelList().size());
     WorkflowList list = adapter.getChannelList().get(0).getWorkflowList();
@@ -117,4 +112,5 @@ public class XsltPreProcessorTest extends BaseCase {
       assertEquals("workflow-" + (i + 1), list.get(i).getUniqueId());
     }
   }
+
 }
