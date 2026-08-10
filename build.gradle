@@ -213,9 +213,11 @@ task offlinePackageList(type: Copy) {
   description 'Build an offline package-list for javadocs'
   group 'Documentation'
 
-  project.configurations.offlineJavadocPackages.collect { dependency ->
-    from(zipTree(dependency)) {
-      into dependency.name
+  doFirst {
+    project.configurations.offlineJavadocPackages.each { dependency ->
+      from(zipTree(dependency)) {
+        into dependency.name
+      }
     }
   }
   include "package-list"
