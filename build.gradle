@@ -209,20 +209,22 @@ task generateVersion {
   }
 }
 
-task offlinePackageList(type: Copy) {
+task offlinePackageList {
   description 'Build an offline package-list for javadocs'
   group 'Documentation'
 
-  doFirst {
+  outputs.dir offlineJavadocPackageDir
+
+  doLast {
     project.configurations.offlineJavadocPackages.each { dependency ->
-      from(zipTree(dependency)) {
-        into dependency.name
+      project.copy {
+        from project.zipTree(dependency)
+        into new File(offlineJavadocPackageDir, dependency.name)
+        include "package-list"
+        include "element-list"
       }
     }
   }
-  include "package-list"
-  include "element-list"
-  into offlineJavadocPackageDir
 }
 
 task copyUnitTestProperties() {
