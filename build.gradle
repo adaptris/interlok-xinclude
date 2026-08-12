@@ -7,7 +7,7 @@ plugins {
   id "jacoco"
   // Manage optional dependencies in maven pom.
   id "nebula.optional-base" version "7.0.0"
-  id "com.github.spotbugs" version "6.5.4"
+  id "com.github.spotbugs" version "6.5.9"
   id "org.sonarqube" version "6.3.1.5724"
   id "org.owasp.dependencycheck" version "12.2.2"
 }
@@ -31,7 +31,7 @@ ext {
 
   organizationName = "Adaptris Ltd"
   organizationUrl = "http://interlok.adaptris.net"
-  slf4jVersion = '2.0.17'
+  slf4jVersion = '2.0.18'
   mockitoVersion = '5.2.0'
 }
 
@@ -209,18 +209,22 @@ task generateVersion {
   }
 }
 
-task offlinePackageList(type: Copy) {
+task offlinePackageList {
   description 'Build an offline package-list for javadocs'
   group 'Documentation'
 
-  project.configurations.offlineJavadocPackages.collect { dependency ->
-    from(zipTree(dependency)) {
-      into dependency.name
+  outputs.dir offlineJavadocPackageDir
+
+  doLast {
+    project.configurations.offlineJavadocPackages.each { dependency ->
+      project.copy {
+        from project.zipTree(dependency)
+        into new File(offlineJavadocPackageDir, dependency.name)
+        include "package-list"
+        include "element-list"
+      }
     }
   }
-  include "package-list"
-  include "element-list"
-  into offlineJavadocPackageDir
 }
 
 task copyUnitTestProperties() {
